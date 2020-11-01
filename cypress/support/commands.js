@@ -33,10 +33,10 @@ const EMAIL_INPUT_SELECTOR = '#inputEmail'
 const AGREE_CHECKBOX = '#exampleCheck1'
 const REGISTER_BUTTON = '#form_submit > button'
 const PASSWORD = 'Pa55w0rds'
+const ERROR_AREA_SELECTOR = '#show-notication-id > div'
 
-Cypress.Commands.add('enterForm', (userName, phone, mail, password = PASSWORD) => {
-    cy.visit(SIGNUP_URL)
 
+Cypress.Commands.add('enterForm', (userName, phone, mail, password = PASSWORD, uncheck = false) => {
     cy.get(USERNAME_INPUT_SELECTOR)
         .type(userName)
         .should('have.value', userName)
@@ -57,9 +57,16 @@ Cypress.Commands.add('enterForm', (userName, phone, mail, password = PASSWORD) =
         .type(password)
         .should('have.value', password)
 
-    cy.get(AGREE_CHECKBOX).check()
-
+    if (uncheck === false){
+        cy.get(AGREE_CHECKBOX).check()
+    } else {
+        cy.get(AGREE_CHECKBOX).uncheck()
+    }
 
     cy.get(REGISTER_BUTTON).click()
+})
 
+Cypress.Commands.add('checkErrorNotification', (contentToContain, errorAreaSelector = ERROR_AREA_SELECTOR) => {
+    cy.get(errorAreaSelector)
+        .should('contain', contentToContain)
 })
